@@ -1,0 +1,24 @@
+---
+import '../../styles/global.css';
+import LoginForm from '../../components/admin/LoginForm.jsx';
+
+export const prerender = false;
+
+const next = Astro.url.searchParams.get('next') || '/admin/products';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Sign in · Admin</title>
+  </head>
+  <body class="min-h-screen bg-cream-50 font-sans antialiased">
+    <div class="mx-auto max-w-sm pt-16 text-center">
+      <p class="font-display text-2xl font-semibold text-blush-700">Bloom &amp; Bite</p>
+      <p class="mt-1 text-sm text-ink-700">Admin sign in</p>
+    </div>
+    <LoginForm client:load next={next} />
+  </body>
+</html>

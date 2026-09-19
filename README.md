@@ -84,15 +84,51 @@ scripts/
 └── seed.js            one-time setup: indexes + sample data
 ```
 
+## Testing the admin flow without a real Atlas cluster
+
+`mongodb-memory-server` (devDependency) downloads and runs a real local
+`mongod` — no Docker, no Atlas account, nothing sent over the network. Useful
+for a full dry run of login → products → publish → rollback before wiring up
+the real database:
+
+```sh
+node -e "
+import('mongodb-memory-server').then(async ({ MongoMemoryServer }) => {
+  const m = await MongoMemoryServer.create({ instance: { port: 27117, dbName: 'giftshop' } });
+  console.log(m.getUri('giftshop'));
+});
+"
+# paste that URI into .env as MONGODB_URI, then in another terminal:
+npm run seed
+npm run seed:admin
+npm run dev
+```
+
+This is what verified the flow during development — including catching a real
+bug in the rollback endpoint (a Mongo `$set`/`$setOnInsert` conflict on
+`createdAt` that only showed up when actually exercising a restore, not from
+reading the code). Worth re-running this after any change to
+`scripts/seed.js`, `src/lib/db.js`, or anything under `api/admin/`.
+
 ## Status
 
 **Phase 1 (public site) — done.** Catalogue, cart, WhatsApp checkout, bouquet
 builder, gallery, about/FAQ, SEO basics, Netlify + Atlas + Cloudinary wiring.
 
-**Phase 2 (admin panel)** — not started. Auth, products CRUD, image upload,
-settings, publish + revision history. Until then, catalogue edits go through
-`src/data/catalog.json` / Mongo directly, or ask the developer.
+**Phase 2 (admin panel) — done.** Email/password auth (bcrypt + JWT cookie,
+rate-limited, generic errors on failure), products/options/gallery/settings
+CRUD, signed Cloudinary uploads with client-side downscaling, and Publish
+(diff preview → snapshot to `revisions` → Netlify build hook) with one-click
+rollback. All `/api/admin/*` and `/admin/*` routes are guarded server-side —
+verified with curl against a real (local) MongoDB: login, rate limiting,
+validation, archive-not-delete, the full publish/diff/rollback cycle, and
+session expiry all pass. Not yet tested against a **real Atlas cluster or a
+live Netlify deploy** — do that before launch (see the plan's verification
+checklist).
 
-**Phase 3–4** — bouquet builder is done ahead of schedule; gallery/about are
-done. Orders log, stock tracking, and a small dashboard are designed for in
-the data model (see the plan) but not yet built.
+**Phase 3** — bouquet builder, gallery and about/FAQ are done (built in phase 1).
+
+**Phase 4 — not started.** Orders log, stock tracking, and a small dashboard.
+The data model (`products.status`/`stock`, `users.role`) was designed for
+these from the start — see the plan — so they should be additive, not a
+rewrite.

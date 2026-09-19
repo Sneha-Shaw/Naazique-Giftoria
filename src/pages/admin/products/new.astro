@@ -1,0 +1,13 @@
+---
+import AdminShell from '../../../layouts/AdminShell.astro';
+import { requirePageSession } from '../../../lib/adminPage.js';
+import ProductEditor from '../../../components/admin/ProductEditor.jsx';
+
+export const prerender = false;
+
+const session = await requirePageSession(Astro);
+if (session instanceof Response) return session;
+---
+<AdminShell title="New product" session={session}>
+  <ProductEditor client:load />
+</AdminShell>

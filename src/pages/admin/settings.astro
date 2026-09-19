@@ -1,0 +1,13 @@
+---
+import AdminShell from '../../layouts/AdminShell.astro';
+import { requirePageSession } from '../../lib/adminPage.js';
+import SettingsEditor from '../../components/admin/SettingsEditor.jsx';
+
+export const prerender = false;
+
+const session = await requirePageSession(Astro);
+if (session instanceof Response) return session;
+---
+<AdminShell title="Settings" session={session}>
+  <SettingsEditor client:load />
+</AdminShell>

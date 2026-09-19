@@ -6,13 +6,14 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node --env-file-if-exists=.env node_modules/.bin/astro dev",
     "prebuild": "node --env-file-if-exists=.env scripts/fetch-catalog.js",
     "build": "astro build",
     "preview": "astro preview",
     "catalog:pull": "node --env-file-if-exists=.env scripts/fetch-catalog.js",
     "seed": "node --env-file-if-exists=.env scripts/seed.js",
-    "astro": "astro"
+    "astro": "astro",
+    "seed:admin": "node --env-file-if-exists=.env scripts/seed-admin.js"
   },
   "dependencies": {
     "@astrojs/netlify": "^8.2.6",
@@ -23,13 +24,19 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "astro": "^7.3.3",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.12",
     "mongodb": "^7.6.0",
     "nanostores": "^1.5.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.6.5"
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^11.2.0"
   }
 }

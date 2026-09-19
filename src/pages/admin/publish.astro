@@ -1,0 +1,13 @@
+---
+import AdminShell from '../../layouts/AdminShell.astro';
+import { requirePageSession } from '../../lib/adminPage.js';
+import PublishPanel from '../../components/admin/PublishPanel.jsx';
+
+export const prerender = false;
+
+const session = await requirePageSession(Astro);
+if (session instanceof Response) return session;
+---
+<AdminShell title="Publish" session={session}>
+  <PublishPanel client:load />
+</AdminShell>
