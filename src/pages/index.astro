@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, settings } from '../lib/catalog.js';
+import { enquiryLink } from '../lib/whatsapp.js';
+
+const featured = products.slice(0, 6);
+const steps = [
+  { n: '1', title: 'Pick or design', body: 'Choose a ready bouquet, or build your own with the chocolates and wrap you want.' },
+  { n: '2', title: 'Send on WhatsApp', body: 'Your basket arrives as a message. We confirm the price, date and delivery.' },
+  { n: '3', title: 'Pay & receive', body: 'Pay by UPI once confirmed. We hand-make it and deliver on your date.' },
+];
+---
+<Base>
+  <section class="relative overflow-hidden bg-gradient-to-b from-blush-100 to-cream-50">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:py-24">
+      <div class="max-w-2xl">
+        <p class="text-sm font-semibold uppercase tracking-widest text-blush-600">Handmade to order</p>
+        <h1 class="mt-3 font-display text-4xl font-semibold leading-tight text-ink-900 sm:text-5xl">
+          {settings.tagline ?? 'Gift bouquets, made for the person you have in mind.'}
+        </h1>
+        <p class="mt-4 text-lg text-ink-700">
+          Chocolate bouquets, hampers and fully custom arrangements — wrapped by hand and delivered on your date.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/shop" class="rounded-full bg-blush-500 px-6 py-3 font-semibold text-white transition hover:bg-blush-600">
+            Shop bouquets
+          </a>
+          <a href="/build" class="rounded-full border border-blush-300 bg-white px-6 py-3 font-semibold text-blush-700 transition hover:bg-blush-50">
+            Build your own
+          </a>
+        </div>
+        {settings.orderCutoffNote && (
+          <p class="mt-6 text-sm text-ink-700/80">{settings.orderCutoffNote}</p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-16">
+    <div class="flex items-end justify-between gap-4">
+      <h2 class="font-display text-2xl font-semibold text-ink-900">Most gifted</h2>
+      <a href="/shop" class="text-sm font-medium text-blush-600 hover:underline">See all →</a>
+    </div>
+    {featured.length === 0 ? (
+      <p class="mt-6 rounded-xl border border-dashed border-blush-200 p-8 text-center text-ink-700">
+        No bouquets published yet.
+      </p>
+    ) : (
+      <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {featured.map((p, i) => <ProductCard product={p} eager={i < 3} />)}
+      </div>
+    )}
+  </section>
+
+  <section class="bg-cream-100 py-16">
+    <div class="mx-auto max-w-6xl px-4">
+      <h2 class="font-display text-2xl font-semibold text-ink-900">How it works</h2>
+      <ol class="mt-8 grid gap-6 sm:grid-cols-3">
+        {steps.map((s) => (
+          <li class="rounded-2xl bg-white p-6">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blush-500 font-semibold text-white">{s.n}</span>
+            <h3 class="mt-4 font-display text-lg font-semibold text-ink-900">{s.title}</h3>
+            <p class="mt-1.5 text-sm text-ink-700">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-16">
+    <div class="rounded-3xl bg-blush-500 px-6 py-12 text-center sm:px-12">
+      <h2 class="font-display text-2xl font-semibold text-white sm:text-3xl">Something specific in mind?</h2>
+      <p class="mx-auto mt-3 max-w-xl text-blush-50">
+        Send a photo or an idea and we'll tell you what it takes. Custom orders are what we do best.
+      </p>
+      <a
+        href={enquiryLink(settings.whatsappNumber)}
+        target="_blank" rel="noopener"
+        class="mt-6 inline-flex rounded-full bg-white px-6 py-3 font-semibold text-blush-700 transition hover:bg-cream-100"
+      >Message us on WhatsApp</a>
+    </div>
+  </section>
+</Base>

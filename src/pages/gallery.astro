@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import { gallery, settings } from '../lib/catalog.js';
+import { imageUrl, srcSet } from '../lib/cloudinary.js';
+---
+<Base title="Gallery" description="Past bouquets and custom orders we've made.">
+  <div class="mx-auto max-w-6xl px-4 py-12">
+    <h1 class="font-display text-3xl font-semibold text-ink-900">Made recently</h1>
+    <p class="mt-2 text-ink-700">A few of the bouquets and hampers we've put together for customers.</p>
+
+    {gallery.length === 0 ? (
+      <p class="mt-10 rounded-xl border border-dashed border-blush-200 p-10 text-center text-ink-700">
+        Photos coming soon — in the meantime, have a look at
+        {' '}<a class="text-blush-600 underline" href="/shop">the shop</a>.
+      </p>
+    ) : (
+      <div class="mt-8 columns-2 gap-4 sm:columns-3 [&>*]:mb-4">
+        {gallery.map((g) => (
+          <figure class="break-inside-avoid overflow-hidden rounded-2xl bg-blush-50">
+            <img
+              src={imageUrl(g.publicId, 800)}
+              srcset={srcSet(g.publicId)}
+              sizes="(min-width: 640px) 33vw, 50vw"
+              alt={g.caption ?? ''}
+              loading="lazy" decoding="async"
+              class="w-full object-cover"
+            />
+            {g.caption && <figcaption class="px-3 py-2 text-xs text-ink-700">{g.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    )}
+
+    {settings.instagramUrl && (
+      <div class="mt-12 text-center">
+        <a href={settings.instagramUrl} target="_blank" rel="noopener"
+           class="inline-flex rounded-full border border-blush-300 bg-white px-6 py-3 font-semibold text-blush-700 transition hover:bg-blush-50">
+          See more on Instagram
+        </a>
+      </div>
+    )}
+  </div>
+</Base>

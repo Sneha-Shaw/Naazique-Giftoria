@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, categories } from '../lib/catalog.js';
+
+// Filtering is a URL query on a fully static page: every category view is the
+// same prerendered HTML, so there is no JS framework and no extra build output.
+const active = Astro.url.searchParams.get('category');
+const shown = active ? products.filter((p) => p.category === active) : products;
+---
+<Base title="Shop" description="Browse handmade chocolate bouquets, hampers and gift arrangements.">
+  <div class="mx-auto max-w-6xl px-4 py-10">
+    <h1 class="font-display text-3xl font-semibold text-ink-900">All bouquets</h1>
+    <p class="mt-2 text-ink-700">Everything is made to order. Add what you like to the basket and send it over on WhatsApp.</p>
+
+    {categories.length > 0 && (
+      <div class="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-1">
+        <a
+          href="/shop"
+          class:list={['shrink-0 rounded-full px-4 py-2 text-sm font-medium transition',
+            !active ? 'bg-blush-500 text-white' : 'border border-blush-200 bg-white text-ink-700 hover:bg-blush-50']}
+        >All</a>
+        {categories.map((c) => (
+          <a
+            href={`/shop?category=${encodeURIComponent(c)}`}
+            class:list={['shrink-0 rounded-full px-4 py-2 text-sm font-medium transition',
+              active === c ? 'bg-blush-500 text-white' : 'border border-blush-200 bg-white text-ink-700 hover:bg-blush-50']}
+          >{c}</a>
+        ))}
+      </div>
+    )}
+
+    {shown.length === 0 ? (
+      <p class="mt-10 rounded-xl border border-dashed border-blush-200 p-10 text-center text-ink-700">
+        Nothing here yet — try another category or <a class="text-blush-600 underline" href="/build">build your own</a>.
+      </p>
+    ) : (
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {shown.map((p, i) => <ProductCard product={p} eager={i < 3} />)}
+      </div>
+    )}
+  </div>
+</Base>

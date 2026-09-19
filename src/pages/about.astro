@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import { settings } from '../lib/catalog.js';
+import { enquiryLink } from '../lib/whatsapp.js';
+const faqs = settings.faqs ?? [];
+---
+<Base title="About & FAQ" description="Delivery areas, lead times and answers to the questions we get most.">
+  <div class="mx-auto max-w-3xl px-4 py-12">
+    <h1 class="font-display text-3xl font-semibold text-ink-900">About {settings.businessName}</h1>
+    <p class="mt-4 text-lg leading-relaxed text-ink-700">
+      Every bouquet here is assembled by hand, to order. Nothing is mass-produced and nothing sits on a
+      shelf — which is why we ask for a couple of days' notice, and why we can build almost anything you
+      have in mind.
+    </p>
+
+    <dl class="mt-10 grid gap-4 sm:grid-cols-2">
+      {settings.deliveryAreas && (
+        <div class="rounded-2xl border border-blush-100 bg-white p-5">
+          <dt class="text-sm font-semibold text-blush-700">Delivery</dt>
+          <dd class="mt-1 text-sm text-ink-700">{settings.deliveryAreas}</dd>
+        </div>
+      )}
+      {settings.orderCutoffNote && (
+        <div class="rounded-2xl border border-blush-100 bg-white p-5">
+          <dt class="text-sm font-semibold text-blush-700">Lead time</dt>
+          <dd class="mt-1 text-sm text-ink-700">{settings.orderCutoffNote}</dd>
+        </div>
+      )}
+    </dl>
+
+    {faqs.length > 0 && (
+      <section class="mt-12">
+        <h2 class="font-display text-2xl font-semibold text-ink-900">Common questions</h2>
+        <div class="mt-5 divide-y divide-blush-100 overflow-hidden rounded-2xl border border-blush-100 bg-white">
+          {faqs.map((f) => (
+            <details class="group p-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between font-medium text-ink-900">
+                {f.q}
+                <span class="ml-4 text-blush-500 transition group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="mt-2 text-sm leading-relaxed text-ink-700">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="mt-12 rounded-2xl bg-cream-100 p-6">
+      <h2 class="font-display text-xl font-semibold text-ink-900">Ordering &amp; refunds</h2>
+      <ul class="mt-3 space-y-2 text-sm leading-relaxed text-ink-700">
+        <li>Prices on this site are indicative. The final price is confirmed on WhatsApp before you pay.</li>
+        <li>Payment is by UPI after confirmation. We'll send a QR code.</li>
+        <li>Because every order is made to order, we can't accept returns once assembly has begun. If something arrives damaged, send a photo the same day and we'll make it right.</li>
+        <li>Changes or cancellations are possible up to 24 hours before your delivery date.</li>
+      </ul>
+    </section>
+
+    <div class="mt-10 text-center">
+      <a href={enquiryLink(settings.whatsappNumber)} target="_blank" rel="noopener"
+         class="inline-flex rounded-full bg-blush-500 px-6 py-3 font-semibold text-white transition hover:bg-blush-600">
+        Still have a question? Message us
+      </a>
+    </div>
+  </div>
+</Base>

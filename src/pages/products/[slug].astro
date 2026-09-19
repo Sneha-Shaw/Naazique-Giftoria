@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import AddToCart from '../../components/AddToCart.jsx';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, settings, isSoldOut } from '../../lib/catalog.js';
+import { imageUrl, srcSet, coverOf } from '../../lib/cloudinary.js';
+import { formatINR, discountPercent } from '../../lib/money.js';
+import { productLink } from '../../lib/whatsapp.js';
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+const { product } = Astro.props;
+const images = [...(product.images ?? [])].sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+const off = discountPercent(product.price, product.mrp);
+const soldOut = isSoldOut(product);
+const cover = coverOf(product, 1200);
+const related = products.filter((p) => p.slug !== product.slug && p.category === product.category).slice(0, 3);
+const { url: whatsappUrl } = productLink({ product, number: settings.whatsappNumber, siteUrl: Astro.site?.href });
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.shortDesc ?? product.description,
+  image: cover.startsWith('http') ? cover : undefined,
+  offers: {
+    '@type': 'Offer',
+    price: product.price,
+    priceCurrency: 'INR',
+    availability: soldOut ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+  },
+};
+---
+<Base title={product.name} description={product.shortDesc ?? product.description} image={cover}>
+  <div class="mx-auto max-w-6xl px-4 py-10">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <nav class="text-sm text-ink-700/80" aria-label="Breadcrumb">
+      <a href="/shop" class="hover:text-blush-600">Shop</a>
+      <span aria-hidden="true"> / </span>
+      <span class="text-ink-900">{product.name}</span>
+    </nav>
+
+    <div class="mt-6 grid gap-10 lg:grid-cols-2">
+      <div>
+        <img
+          src={images[0] ? imageUrl(images[0].publicId, 1200) : '/placeholder.svg'}
+          srcset={images[0] ? srcSet(images[0].publicId) : undefined}
+          sizes="(min-width: 1024px) 560px, 92vw"
+          alt={images[0]?.alt ?? product.name}
+          width="1200" height="1200" fetchpriority="high" decoding="async"
+          class="aspect-square w-full rounded-2xl bg-blush-50 object-cover"
+        />
+        {images.length > 1 && (
+          <div class="no-scrollbar mt-3 flex gap-3 overflow-x-auto">
+            {images.slice(1).map((img) => (
+              <img
+                src={imageUrl(img.publicId, 400)}
+                alt={img.alt ?? ''}
+                width="120" height="120" loading="lazy" decoding="async"
+                class="h-24 w-24 shrink-0 rounded-xl bg-blush-50 object-cover"
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h1 class="font-display text-3xl font-semibold text-ink-900">{product.name}</h1>
+
+        <div class="mt-3 flex flex-wrap items-baseline gap-3">
+          <span class="font-display text-2xl font-semibold text-ink-900">{formatINR(product.price)}</span>
+          {product.mrp > product.price && (
+            <span class="text-ink-700/60 line-through">{formatINR(product.mrp)}</span>
+          )}
+          {off && <span class="rounded-full bg-blush-100 px-2.5 py-1 text-xs font-semibold text-blush-700">{off}% off</span>}
+        </div>
+
+        {product.description && <p class="mt-5 leading-relaxed text-ink-700">{product.description}</p>}
+
+        <dl class="mt-6 space-y-2 text-sm">
+          {product.leadTimeDays && (
+            <div class="flex gap-2">
+              <dt class="text-ink-700/70">Made in</dt>
+              <dd class="font-medium text-ink-900">{product.leadTimeDays} day{product.leadTimeDays === 1 ? '' : 's'}</dd>
+            </div>
+          )}
+          {settings.deliveryAreas && (
+            <div class="flex gap-2">
+              <dt class="text-ink-700/70">Delivery</dt>
+              <dd class="font-medium text-ink-900">{settings.deliveryAreas}</dd>
+            </div>
+          )}
+        </dl>
+
+        <div class="mt-8 space-y-3">
+          {soldOut ? (
+            <p class="rounded-xl bg-cream-100 px-4 py-3 text-center text-ink-700">
+              This one is currently unavailable — message us and we'll let you know when it's back.
+            </p>
+          ) : (
+            <>
+              <AddToCart client:load product={product} image={coverOf(product, 400)} variant="full" />
+              <a
+                href={whatsappUrl} target="_blank" rel="noopener"
+                class="flex w-full items-center justify-center rounded-full border border-[#25D366] px-6 py-3.5 font-semibold text-[#128C7E] transition hover:bg-[#25D366]/10"
+              >Order just this on WhatsApp</a>
+            </>
+          )}
+          <p class="text-center text-xs text-ink-700/70">
+            We confirm the final price and date on chat before any payment.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {related.length > 0 && (
+      <section class="mt-20">
+        <h2 class="font-display text-2xl font-semibold text-ink-900">You might also like</h2>
+        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((p) => <ProductCard product={p} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>

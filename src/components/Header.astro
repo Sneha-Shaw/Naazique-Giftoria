@@ -1,0 +1,54 @@
+---
+import { settings } from '../lib/catalog.js';
+import CartButton from './CartButton.jsx';
+
+const links = [
+  { href: '/shop', label: 'Shop' },
+  { href: '/build', label: 'Build your own' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/about', label: 'About' },
+];
+const path = Astro.url.pathname;
+---
+<header class="sticky top-0 z-30 border-b border-blush-100 bg-cream-50/90 backdrop-blur" style="top: env(safe-area-inset-top, 0px)">
+  <nav class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3" aria-label="Main">
+    <a href="/" class="font-display text-xl font-semibold tracking-tight text-blush-700">
+      {settings.businessName ?? 'Gift Bouquets'}
+    </a>
+
+    <ul class="no-scrollbar ml-auto hidden items-center gap-1 sm:flex">
+      {links.map((l) => (
+        <li>
+          <a
+            href={l.href}
+            aria-current={path.startsWith(l.href) ? 'page' : undefined}
+            class:list={[
+              'rounded-full px-3 py-2 text-sm font-medium transition hover:bg-blush-100',
+              path.startsWith(l.href) ? 'text-blush-700' : 'text-ink-700',
+            ]}
+          >{l.label}</a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="ml-auto sm:ml-0">
+      <CartButton client:idle />
+    </div>
+  </nav>
+
+  {/* Mobile nav: a scrollable rail rather than a hamburger — fewer taps to the shop. */}
+  <ul class="no-scrollbar flex gap-1 overflow-x-auto border-t border-blush-100 px-3 py-2 sm:hidden">
+    {links.map((l) => (
+      <li class="shrink-0">
+        <a
+          href={l.href}
+          aria-current={path.startsWith(l.href) ? 'page' : undefined}
+          class:list={[
+            'block rounded-full px-3 py-1.5 text-sm font-medium transition',
+            path.startsWith(l.href) ? 'bg-blush-100 text-blush-700' : 'text-ink-700',
+          ]}
+        >{l.label}</a>
+      </li>
+    ))}
+  </ul>
+</header>
