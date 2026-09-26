@@ -32,7 +32,13 @@ console.log('✔ indexes created');
 
 // --- Products ------------------------------------------------------------
 const now = new Date();
-const productOps = seed.products.map((p) => ({
+// catalog.json can itself be a snapshot pulled FROM a live database (via
+// `npm run catalog:pull`), in which case products already carry their own
+// createdAt/updatedAt. Both must be stripped before re-adding updatedAt to
+// $set and createdAt to $setOnInsert — Mongo rejects a bulkWrite with the same
+// field in both (error 40: "would create a conflict"). Same bug, same fix as
+// the rollback endpoint (src/pages/api/admin/revisions/[id]/restore.js).
+const productOps = seed.products.map(({ createdAt, updatedAt, ...p }) => ({
   updateOne: {
     filter: { slug: p.slug },
     update: { $set: { ...p, updatedAt: now }, $setOnInsert: { createdAt: now } },

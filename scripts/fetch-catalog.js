@@ -47,10 +47,16 @@ try {
 try {
   const db = await getDb();
 
-  // `_id` is dropped: it is a BSON ObjectId that would serialize as an object and
-  // is meaningless to the static site, which addresses products by `slug`.
+  // `_id` is dropped: it is a BSON ObjectId that would serialize as an object
+  // and is meaningless to the static site, which addresses products by `slug`.
+  // `createdAt`/`updatedAt` are dropped too: they're internal bookkeeping the
+  // site never displays, and carrying them into this snapshot is exactly what
+  // broke both scripts/seed.js and the rollback endpoint's bulkWrite — Mongo
+  // rejects `$set: {createdAt: ...}` alongside `$setOnInsert: {createdAt: ...}`
+  // on the same field. Simplest fix is to never let those fields leave the DB.
+  const productProjection = { _id: 0, createdAt: 0, updatedAt: 0 };
   const [products, gallery, settingsDoc] = await Promise.all([
-    db.collection('products').find({ status: { $ne: 'archived' } }, { projection: { _id: 0 } }).toArray(),
+    db.collection('products').find({ status: { $ne: 'archived' } }, { projection: productProjection }).toArray(),
     db.collection('gallery').find({}, { projection: { _id: 0 } }).toArray(),
     db.collection('settings').findOne({ key: 'site' }, { projection: { _id: 0, key: 0 } }),
   ]);
