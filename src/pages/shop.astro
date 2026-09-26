@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProductCard from '../components/ProductCard.astro';
-import { products, categories } from '../lib/catalog.js';
+import { products, categories, settings } from '../lib/catalog.js';
+import { enquiryLink } from '../lib/whatsapp.js';
 
 // Filtering is a URL query on a fully static page: every category view is the
 // same prerendered HTML, so there is no JS framework and no extra build output.
@@ -32,7 +33,8 @@ const shown = active ? products.filter((p) => p.category === active) : products;
 
     {shown.length === 0 ? (
       <p class="mt-10 rounded-xl border border-dashed border-blush-200 p-10 text-center text-ink-700">
-        Nothing here yet — try another category or <a class="text-blush-600 underline" href="/build">build your own</a>.
+        Nothing here yet — try another category or
+        <a class="text-blush-600 underline" href={enquiryLink(settings.whatsappNumber)} target="_blank" rel="noopener">ask us on WhatsApp</a>.
       </p>
     ) : (
       <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

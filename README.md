@@ -11,15 +11,15 @@ non-technical operator's guide (once the admin panel ships in phase 2).
 ## Stack
 
 - **Astro** (static output) — the public site prerenders to plain HTML for SEO
-  and fast link previews. `output: 'static'`; individual routes will opt into
-  `prerender = false` for the admin panel and API routes in phase 2.
-- **React islands** for the cart, the bouquet builder, and (soon) the admin UI.
+  and fast link previews. `output: 'static'`; the admin panel and API routes
+  opt into `prerender = false` and deploy as Netlify functions.
+- **React islands** for the cart and the admin UI.
 - **Tailwind v4** via the Vite plugin.
 - **MongoDB Atlas (M0, free)** — the catalogue lives here. The site reads it
   once per build, not per visitor (see `scripts/fetch-catalog.js`), so runtime
   traffic never touches the database.
 - **Cloudinary (free tier)** — image hosting, resizing, WebP, CDN.
-- **Netlify (free tier)** — hosting, CDN, and (phase 2) serverless functions.
+- **Netlify (free tier)** — hosting, CDN, and serverless functions.
 
 ## Local development
 
@@ -43,9 +43,9 @@ MongoDB Atlas  →  scripts/fetch-catalog.js (runs before every build)
 ```
 
 `npm run build` runs `fetch-catalog.js` first (via the `prebuild` script). It
-reads `products`, `options`, `gallery` and `settings` from Mongo and writes
-them to `src/data/catalog.json`. Astro pages import from `src/lib/catalog.js`,
-never from the database directly — there is no runtime DB dependency at all.
+reads `products`, `gallery` and `settings` from Mongo and writes them to
+`src/data/catalog.json`. Astro pages import from `src/lib/catalog.js`, never
+from the database directly — there is no runtime DB dependency at all.
 
 **Build-time fallback:** if `MONGODB_URI` is unset, or the cluster is
 unreachable (Atlas M0 pauses after ~60 days idle), the fetch script leaves the
@@ -75,9 +75,9 @@ these live in Netlify's environment variable settings, never in the repo.
 src/
 ├── lib/          catalog.js, cloudinary.js, whatsapp.js, money.js, db.js
 ├── stores/       cart.js (nanostores, localStorage-persisted)
-├── components/   ProductCard, CartDrawer, BouquetBuilder, Header/Footer, ...
+├── components/   ProductCard, CartDrawer, Header/Footer, admin/...
 ├── layouts/      Base.astro (SEO, OG tags, JSON-LD, WhatsApp float button)
-├── pages/        /, /shop, /products/[slug], /build, /gallery, /about
+├── pages/        /, /shop, /products/[slug], /gallery, /about, /admin/*, /api/*
 └── data/         catalog.json — the committed build-time snapshot
 scripts/
 ├── fetch-catalog.js   Mongo → catalog.json, with the fallback described above
@@ -112,13 +112,13 @@ reading the code). Worth re-running this after any change to
 
 ## Status
 
-**Phase 1 (public site) — done.** Catalogue, cart, WhatsApp checkout, bouquet
-builder, gallery, about/FAQ, SEO basics, Netlify + Atlas + Cloudinary wiring.
+**Phase 1 (public site) — done.** Catalogue, cart, WhatsApp checkout,
+gallery, about/FAQ, SEO basics, Netlify + Atlas + Cloudinary wiring.
 
 **Phase 2 (admin panel) — done.** Email/password auth (bcrypt + JWT cookie,
-rate-limited, generic errors on failure), products/options/gallery/settings
-CRUD, signed Cloudinary uploads with client-side downscaling, and Publish
-(diff preview → snapshot to `revisions` → Netlify build hook) with one-click
+rate-limited, generic errors on failure), products/gallery/settings CRUD,
+signed Cloudinary uploads with client-side downscaling, and Publish (diff
+preview → snapshot to `revisions` → Netlify build hook) with one-click
 rollback. All `/api/admin/*` and `/admin/*` routes are guarded server-side —
 verified with curl against a real (local) MongoDB: login, rate limiting,
 validation, archive-not-delete, the full publish/diff/rollback cycle, and
@@ -126,7 +126,10 @@ session expiry all pass. Not yet tested against a **real Atlas cluster or a
 live Netlify deploy** — do that before launch (see the plan's verification
 checklist).
 
-**Phase 3** — bouquet builder, gallery and about/FAQ are done (built in phase 1).
+**Phase 3** — gallery and about/FAQ are done (built in phase 1). The custom
+bouquet builder (`/build`) was built, then removed at the user's request —
+custom orders now go through the WhatsApp enquiry links on the home and shop
+pages instead of an in-browser builder.
 
 **Phase 4 — not started.** Orders log, stock tracking, and a small dashboard.
 The data model (`products.status`/`stock`, `users.role`) was designed for

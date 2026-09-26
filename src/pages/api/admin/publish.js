@@ -26,14 +26,13 @@ export async function POST(context) {
   if (!session) return unauthorized();
 
   const db = await getDb();
-  const [products, options, gallery, settings] = await Promise.all([
+  const [products, gallery, settings] = await Promise.all([
     db.collection('products').find({ status: { $ne: 'archived' } }, { projection: { _id: 0 } }).toArray(),
-    db.collection('options').find({}, { projection: { _id: 0 } }).toArray(),
     db.collection('gallery').find({}, { projection: { _id: 0 } }).toArray(),
     db.collection('settings').findOne({ key: 'site' }, { projection: { _id: 0, key: 0 } }),
   ]);
 
-  const snapshot = { products, options, gallery, settings: settings ?? {} };
+  const snapshot = { products, gallery, settings: settings ?? {} };
   let note;
   try {
     ({ note } = await context.request.json());

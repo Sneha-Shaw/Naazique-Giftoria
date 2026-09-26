@@ -30,17 +30,6 @@ export const productSchema = z.object({
   tags: z.array(z.string().trim().max(30)).default([]),
 });
 
-export const optionSchema = z.object({
-  group: z.enum(['wrap', 'chocolate', 'addon']),
-  optionId: z.string().trim().toLowerCase().regex(slugPattern),
-  label: z.string().trim().min(1).max(60),
-  priceDelta: z.coerce.number().int().default(0),
-  image: z.string().trim().max(200).nullable().default(null),
-  swatch: z.string().trim().max(20).optional(),
-  isActive: z.coerce.boolean().default(true),
-  sort: z.coerce.number().int().default(999),
-});
-
 export const galleryItemSchema = z.object({
   publicId: z.string().min(1),
   caption: z.string().trim().max(200).default(''),

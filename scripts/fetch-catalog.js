@@ -49,9 +49,8 @@ try {
 
   // `_id` is dropped: it is a BSON ObjectId that would serialize as an object and
   // is meaningless to the static site, which addresses products by `slug`.
-  const [products, options, gallery, settingsDoc] = await Promise.all([
+  const [products, gallery, settingsDoc] = await Promise.all([
     db.collection('products').find({ status: { $ne: 'archived' } }, { projection: { _id: 0 } }).toArray(),
-    db.collection('options').find({}, { projection: { _id: 0 } }).toArray(),
     db.collection('gallery').find({}, { projection: { _id: 0 } }).toArray(),
     db.collection('settings').findOne({ key: 'site' }, { projection: { _id: 0, key: 0 } }),
   ]);
@@ -60,7 +59,6 @@ try {
     generatedAt: new Date().toISOString(),
     settings: settingsDoc ?? {},
     products,
-    options,
     gallery,
   };
 
@@ -68,7 +66,7 @@ try {
   await closeDb();
 
   const published = products.filter((p) => p.status === 'published').length;
-  ok(`${published} published product${published === 1 ? '' : 's'}, ${options.length} builder options, ${gallery.length} gallery images.`);
+  ok(`${published} published product${published === 1 ? '' : 's'}, ${gallery.length} gallery images.`);
   if (published === 0) warn('no published products — the shop page will be empty.');
 } catch (err) {
   try { await closeDb?.(); } catch { /* already down */ }

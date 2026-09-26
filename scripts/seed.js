@@ -24,7 +24,6 @@ const db = await getDb();
 // --- Indexes -------------------------------------------------------------
 await db.collection('products').createIndex({ slug: 1 }, { unique: true });
 await db.collection('products').createIndex({ status: 1, sort: 1 });
-await db.collection('options').createIndex({ group: 1, sort: 1 });
 await db.collection('users').createIndex({ email: 1 }, { unique: true });
 // TTL index: login attempts evaporate after 15 minutes, giving us free,
 // self-cleaning rate limiting with no cron job to run.
@@ -43,15 +42,6 @@ const productOps = seed.products.map((p) => ({
 if (productOps.length) {
   const r = await db.collection('products').bulkWrite(productOps);
   console.log(`✔ products: ${r.upsertedCount} added, ${r.modifiedCount} updated`);
-}
-
-// --- Builder options -----------------------------------------------------
-const optionOps = seed.options.map((o) => ({
-  updateOne: { filter: { group: o.group, optionId: o.optionId }, update: { $set: o }, upsert: true },
-}));
-if (optionOps.length) {
-  const r = await db.collection('options').bulkWrite(optionOps);
-  console.log(`✔ options: ${r.upsertedCount} added, ${r.modifiedCount} updated`);
 }
 
 // --- Settings (never clobber existing real values) -----------------------

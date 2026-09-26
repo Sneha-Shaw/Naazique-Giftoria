@@ -6,7 +6,7 @@ import { enquiryLink } from '../lib/whatsapp.js';
 
 const featured = products.slice(0, 6);
 const steps = [
-  { n: '1', title: 'Pick or design', body: 'Choose a ready bouquet, or build your own with the chocolates and wrap you want.' },
+  { n: '1', title: 'Pick a bouquet', body: 'Browse the shop, or message us with what you have in mind.' },
   { n: '2', title: 'Send on WhatsApp', body: 'Your basket arrives as a message. We confirm the price, date and delivery.' },
   { n: '3', title: 'Pay & receive', body: 'Pay by UPI once confirmed. We hand-make it and deliver on your date.' },
 ];
@@ -26,8 +26,12 @@ const steps = [
           <a href="/shop" class="rounded-full bg-blush-500 px-6 py-3 font-semibold text-white transition hover:bg-blush-600">
             Shop bouquets
           </a>
-          <a href="/build" class="rounded-full border border-blush-300 bg-white px-6 py-3 font-semibold text-blush-700 transition hover:bg-blush-50">
-            Build your own
+          <a
+            href={enquiryLink(settings.whatsappNumber)}
+            target="_blank" rel="noopener"
+            class="rounded-full border border-blush-300 bg-white px-6 py-3 font-semibold text-blush-700 transition hover:bg-blush-50"
+          >
+            Ask about a custom order
           </a>
         </div>
         {settings.orderCutoffNote && (

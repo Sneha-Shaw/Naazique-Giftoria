@@ -108,19 +108,5 @@
       "tags": ["birthday", "hamper"]
     }
   ],
-  "options": [
-    { "group": "wrap", "optionId": "blush", "label": "Blush Pink", "priceDelta": 0, "image": null, "isActive": true, "sort": 10, "swatch": "#f6c9d0" },
-    { "group": "wrap", "optionId": "ivory", "label": "Ivory", "priceDelta": 0, "image": null, "isActive": true, "sort": 20, "swatch": "#f2e8d9" },
-    { "group": "wrap", "optionId": "burgundy", "label": "Burgundy", "priceDelta": 50, "image": null, "isActive": true, "sort": 30, "swatch": "#7b2436" },
-    { "group": "wrap", "optionId": "sage", "label": "Sage Green", "priceDelta": 50, "image": null, "isActive": true, "sort": 40, "swatch": "#b7c4ae" },
-    { "group": "chocolate", "optionId": "silk", "label": "Dairy Milk Silk", "priceDelta": 150, "image": null, "isActive": true, "sort": 10 },
-    { "group": "chocolate", "optionId": "ferrero", "label": "Ferrero Rocher", "priceDelta": 220, "image": null, "isActive": true, "sort": 20 },
-    { "group": "chocolate", "optionId": "kitkat", "label": "KitKat", "priceDelta": 90, "image": null, "isActive": true, "sort": 30 },
-    { "group": "chocolate", "optionId": "5star", "label": "5 Star", "priceDelta": 70, "image": null, "isActive": true, "sort": 40 },
-    { "group": "addon", "optionId": "teddy6", "label": "Teddy Bear (6\")", "priceDelta": 250, "image": null, "isActive": true, "sort": 10 },
-    { "group": "addon", "optionId": "card", "label": "Handwritten Card", "priceDelta": 50, "image": null, "isActive": true, "sort": 20 },
-    { "group": "addon", "optionId": "lights", "label": "Fairy Lights", "priceDelta": 120, "image": null, "isActive": true, "sort": 30 },
-    { "group": "addon", "optionId": "balloons", "label": "Balloon Bunch", "priceDelta": 180, "image": null, "isActive": true, "sort": 40 }
-  ],
   "gallery": []
 }

@@ -30,7 +30,9 @@ export async function POST(context) {
   const revision = await db.collection('revisions').findOne({ _id });
   if (!revision) return json({ error: 'Revision not found' }, 404);
 
-  const { products = [], options = [], gallery = [], settings = {} } = revision.snapshot;
+  // `options` in an older revision's snapshot (from before the builder feature
+  // was removed) is simply ignored here — harmless, nothing reads it anymore.
+  const { products = [], gallery = [], settings = {} } = revision.snapshot;
   const now = new Date();
 
   // Restoring archives everything currently published that ISN'T in the
@@ -59,9 +61,6 @@ export async function POST(context) {
     );
   }
 
-  await db.collection('options').deleteMany({});
-  if (options.length) await db.collection('options').insertMany(options);
-
   await db.collection('gallery').deleteMany({});
   if (gallery.length) await db.collection('gallery').insertMany(gallery);
 
@@ -71,7 +70,7 @@ export async function POST(context) {
 
   // A rollback IS a publish — it needs the same snapshot + rebuild so the live
   // site actually reflects the restored state, not just the database.
-  const freshSnapshot = { products, options, gallery, settings };
+  const freshSnapshot = { products, gallery, settings };
   await db.collection('revisions').insertOne({
     snapshot: freshSnapshot,
     publishedAt: now,

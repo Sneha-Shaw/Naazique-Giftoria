@@ -19,16 +19,6 @@ export const gallery = (catalog.gallery ?? [])
   .filter((g) => g.isActive !== false)
   .sort((a, b) => (a.sort ?? 999) - (b.sort ?? 999));
 
-const activeOptions = (catalog.options ?? [])
-  .filter((o) => o.isActive !== false)
-  .sort((a, b) => (a.sort ?? 999) - (b.sort ?? 999));
-
-/** Builder options grouped by `group` — { wrap: [...], chocolate: [...], addon: [...] } */
-export const optionGroups = activeOptions.reduce((acc, o) => {
-  (acc[o.group] ??= []).push(o);
-  return acc;
-}, {});
-
 export function getProduct(slug) {
   return products.find((p) => p.slug === slug);
 }
