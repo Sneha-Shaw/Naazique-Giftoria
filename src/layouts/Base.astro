@@ -13,10 +13,12 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteName = settings.businessName ?? 'Gift Bouquets';
+const siteName = settings.businessName ?? 'Naazique Giftoria';
 const fullTitle = title ? `${title} · ${siteName}` : `${siteName} — ${settings.tagline ?? ''}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com').href;
-const ogImage = image ? new URL(image, Astro.site ?? 'https://example.com').href : undefined;
+// Falls back to the logo so every page — not just products — has a real
+// image in link previews (WhatsApp, Instagram, Google) instead of none.
+const ogImage = new URL(image ?? '/logo.png', Astro.site ?? 'https://example.com').href;
 
 // LocalBusiness markup is what gets her into "gift shops near me" alongside the
 // Google Business Profile — the single highest-value SEO item for a local shop.
@@ -36,7 +38,8 @@ const jsonLd = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -47,8 +50,8 @@ const jsonLd = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteName} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://res.cloudinary.com" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

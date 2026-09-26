@@ -204,7 +204,7 @@ export default function ProductEditor({ productId }) {
           <Field label="Name">
             <input value={form.name} onChange={(e) => set('name', e.target.value)} className={inputCls} />
           </Field>
-          <Field label="URL" hint={`bloomandbite.netlify.app/products/${form.slug || '…'}`}>
+          <Field label="URL" hint={`naaziquegiftoria.netlify.app/products/${form.slug || '…'}`}>
             <input
               value={form.slug}
               onChange={(e) => { setSlugTouched(true); set('slug', slugify(e.target.value)); }}

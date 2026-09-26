@@ -5,9 +5,12 @@ const year = new Date().getFullYear();
 ---
 <footer class="mt-20 border-t border-blush-100 bg-cream-100">
   <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3">
-    <div>
-      <p class="font-display text-lg font-semibold text-blush-700">{settings.businessName}</p>
-      <p class="mt-2 text-sm text-ink-700">{settings.tagline}</p>
+    <div class="flex items-start gap-3">
+      <img src="/logo.png" alt="" width="44" height="44" class="h-11 w-11 shrink-0 rounded-full" loading="lazy" />
+      <div>
+        <p class="font-display text-lg font-semibold text-blush-700">{settings.businessName}</p>
+        <p class="mt-2 text-sm text-ink-700">{settings.tagline}</p>
+      </div>
     </div>
     <div>
       <p class="text-sm font-semibold text-ink-900">Ordering</p>

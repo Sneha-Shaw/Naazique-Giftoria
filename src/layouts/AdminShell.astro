@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import LogoutButton from '../components/admin/LogoutButton.jsx';
+import { settings } from '../lib/catalog.js';
 
 const { title, session } = Astro.props;
 const path = Astro.url.pathname;
@@ -25,15 +26,19 @@ const ICONS = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
     <title>{title ? `${title} · Admin` : 'Admin'}</title>
   </head>
   <body class="min-h-screen bg-cream-50 font-sans antialiased">
     <div class="lg:flex">
       {/* Side nav — desktop only */}
       <aside class="hidden w-56 shrink-0 border-r border-blush-100 bg-white lg:block" style="padding-top: env(safe-area-inset-top, 0px)">
-        <div class="p-5">
-          <p class="font-display text-lg font-semibold text-blush-700">Bloom &amp; Bite</p>
-          <p class="mt-0.5 truncate text-xs text-ink-700/70">{session?.email}</p>
+        <div class="flex items-center gap-2.5 p-5">
+          <img src="/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0 rounded-full" />
+          <div class="min-w-0">
+            <p class="truncate font-display text-lg font-semibold text-blush-700">{settings.businessName ?? 'Naazique Giftoria'}</p>
+            <p class="truncate text-xs text-ink-700/70">{session?.email}</p>
+          </div>
         </div>
         <nav class="space-y-0.5 px-3">
           {NAV.map((item) => (

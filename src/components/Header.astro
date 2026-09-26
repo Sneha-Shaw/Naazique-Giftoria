@@ -11,8 +11,17 @@ const path = Astro.url.pathname;
 ---
 <header class="sticky top-0 z-30 border-b border-blush-100 bg-cream-50/90 backdrop-blur" style="top: env(safe-area-inset-top, 0px)">
   <nav class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3" aria-label="Main">
-    <a href="/" class="font-display text-xl font-semibold tracking-tight text-blush-700">
-      {settings.businessName ?? 'Gift Bouquets'}
+    <a href="/" class="flex items-center gap-2.5">
+      <img
+        src="/logo.png"
+        alt=""
+        width="40" height="40"
+        class="h-10 w-10 rounded-full"
+        fetchpriority="high"
+      />
+      <span class="font-display text-xl font-semibold tracking-tight text-blush-700">
+        {settings.businessName ?? 'Naazique Giftoria'}
+      </span>
     </a>
 
     <ul class="no-scrollbar ml-auto hidden items-center gap-1 sm:flex">

@@ -1,4 +1,4 @@
-# Bloom & Bite — Gift Bouquet Shop
+# Naazique Giftoria
 
 Chocolate bouquets and custom gift hampers. Astro + React islands + Tailwind,
 catalogue in MongoDB Atlas, images on Cloudinary, hosted free on Netlify.

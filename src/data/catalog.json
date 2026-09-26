@@ -1,111 +1,157 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-09-26T17:04:59.675Z",
   "settings": {
-    "businessName": "Bloom & Bite",
+    "businessName": "Naazique Giftoria",
     "tagline": "Handmade chocolate bouquets, made to order",
     "whatsappNumber": "919999999999",
-    "instagramUrl": "https://instagram.com/",
+    "instagramUrl": "https://instagram.com/naaziquegiftoria",
     "deliveryAreas": "Free delivery across the city. Outstation courier available on request.",
     "orderCutoffNote": "Please order at least 2 days ahead. Same-day orders depend on availability — just ask!",
     "announcementBanner": "",
     "minOrderValue": 500,
     "faqs": [
-      { "q": "How far in advance should I order?", "a": "Two days is ideal. For large or fully custom bouquets, three to four days lets us source exactly what you want." },
-      { "q": "Can I choose the chocolates?", "a": "Yes — use the Build Your Own page, or just send a message and we'll put something together." },
-      { "q": "Do you deliver?", "a": "Yes, free within the city. Share your pincode on WhatsApp and we'll confirm." },
-      { "q": "How do I pay?", "a": "UPI once the order is confirmed on WhatsApp. We'll send a QR code." }
+      {
+        "q": "How far in advance should I order?",
+        "a": "Two days is ideal. For large or fully custom bouquets, three to four days lets us source exactly what you want."
+      },
+      {
+        "q": "Can I choose the chocolates?",
+        "a": "Yes — use the Build Your Own page, or just send a message and we'll put something together."
+      },
+      {
+        "q": "Do you deliver?",
+        "a": "Yes, free within the city. Share your pincode on WhatsApp and we'll confirm."
+      },
+      {
+        "q": "How do I pay?",
+        "a": "UPI once the order is confirmed on WhatsApp. We'll send a QR code."
+      }
     ]
   },
   "products": [
     {
-      "slug": "ferrero-rocher-bouquet",
-      "name": "Ferrero Rocher Bouquet",
+      "slug": "kanjak-gift",
       "category": "Chocolate",
-      "shortDesc": "16 Ferrero Rocher in satin wrap with fairy lights",
-      "description": "Our most-gifted bouquet. Sixteen Ferrero Rocher arranged with artificial roses, wrapped in soft satin and finished with warm fairy lights. Comes with a handwritten gift card.",
-      "price": 1299,
-      "mrp": 1499,
-      "images": [],
-      "leadTimeDays": 2,
-      "status": "published",
-      "stock": null,
+      "createdAt": "2026-09-26T16:38:20.521Z",
+      "description": "VS Club Kanjak Gifts for Girls (Pack of 12) Complete Kanya Pujan Gift Set for Navratri | Includes Premium Stationery Kit (Pencil, Eraser, Sharpener) & Delicious Cndies| Jai Mata Di Navratri Return Gifts for Kids\n✨ COMPLETE KANYA PUJAN GIFT SET FOR GIRLS: Save time this Navratri with our ready-to-use Kanjak gift packs. This set of 12 pre-packed return gifts for Kanya Pujan is the perfect solution for busy households during Ashtami and Navami pujan.\n📚 PREMIUM STATIONERY RETURN GIFTS: Each mini pack is filled with essential school stationery items including a high-quality pencil, a sharpener, and a dust-free eraser. These are useful gifts for kids that parents appreciate and children love to use for school.\n🍬 BULK BIRTHDAY & FESTIVE GOODY BAGS: Beyond Navratri, these serve as excellent birthday return gifts for kids or party favor bags. Each pack includes 2 delicious cndies and a vibrant butterfly hair clutcher, making it a delightful gift hamper for girls.\n🙏 JAI MATA DI DEVOTIONAL THEME: Designed specifically for Hindu festival gifting, each pack features a beautiful Goddess Durga illustration and \"Jai Mata Di\" branding. It maintains the traditional and spiritual vibe of Navratri celebrations.\n💰 BUDGET-FRIENDLY WHOLESALE PACK: Get the best value with this bulk gift set of 12. These affordable Kanjak items come beautifully packed in transparent sleeves, ensuring premium presentation without the high cost of individual gifting sets.\n🌟 MULTI-PURPOSE FESTIVE GIFTING: While ideally designed for Kanjak / Kanya Pujan, these sets also serve as excellent return gifts for birthdays, school events, or any festive gathering for young girls and boys.\n💰 BUDGET-FRIENDLY WHOLESALE PACK: Get the best value with this bulk gift set of 12. These affordable Kanjak items come beautifully packed in transparent sleeves, ensuring premium presentation without the high cost of individual gifting sets.",
+      "images": [
+        {
+          "publicId": "giftshop/ferrero-rocher-bouquet-1-muimohy7",
+          "alt": "Ferrero Rocher Bouquet",
+          "sort": 0
+        }
+      ],
+      "leadTimeDays": 7,
+      "mrp": 0,
+      "name": "VS Club Kanjak Gift Pack Mini (Set of 12) - Complete Ashtami/Navami Kanya Pujan Gift Set for Girls",
+      "price": 900,
+      "shortDesc": "Includes Pencil, Do ms Stationery, Candies & Butterfly Hair clutchers",
       "sort": 10,
-      "tags": ["bestseller", "anniversary"]
+      "status": "published",
+      "stock": 10,
+      "tags": [
+        "bestseller",
+        "anniversary"
+      ],
+      "updatedAt": "2026-09-26T16:59:20.150Z"
     },
     {
       "slug": "dairy-milk-silk-bouquet",
-      "name": "Dairy Milk Silk Bouquet",
       "category": "Chocolate",
-      "shortDesc": "8 Silk bars, pastel wrap, ribbon bow",
+      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "Eight full-size Dairy Milk Silk bars in a pastel paper wrap with a hand-tied ribbon. A crowd-pleaser for birthdays.",
-      "price": 899,
-      "mrp": 1049,
       "images": [],
       "leadTimeDays": 2,
+      "mrp": 1049,
+      "name": "Dairy Milk Silk Bouquet",
+      "price": 899,
+      "shortDesc": "8 Silk bars, pastel wrap, ribbon bow",
+      "sort": 20,
       "status": "published",
       "stock": null,
-      "sort": 20,
-      "tags": ["birthday"]
+      "tags": [
+        "birthday"
+      ],
+      "updatedAt": "2026-09-26T16:38:20.521Z"
     },
     {
       "slug": "kitkat-mini-bouquet",
-      "name": "KitKat Mini Bouquet",
       "category": "Chocolate",
-      "shortDesc": "Compact 6-bar bouquet — great for a small thank-you",
+      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "A smaller, budget-friendly bouquet with six KitKat bars, baby's breath and a kraft paper wrap.",
-      "price": 749,
-      "mrp": 0,
       "images": [],
       "leadTimeDays": 1,
+      "mrp": 0,
+      "name": "KitKat Mini Bouquet",
+      "price": 749,
+      "shortDesc": "Compact 6-bar bouquet — great for a small thank-you",
+      "sort": 30,
       "status": "published",
       "stock": null,
-      "sort": 30,
-      "tags": ["budget"]
+      "tags": [
+        "budget"
+      ],
+      "updatedAt": "2026-09-26T16:38:20.521Z"
     },
     {
       "slug": "money-bouquet",
-      "name": "Money Bouquet",
       "category": "Special",
-      "shortDesc": "Crisp notes folded into roses — you choose the amount",
+      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "Currency notes hand-folded into roses and arranged with greenery. You provide the notes, we do the folding. Price shown is for the arrangement only.",
-      "price": 1599,
-      "mrp": 0,
       "images": [],
       "leadTimeDays": 3,
+      "mrp": 0,
+      "name": "Money Bouquet",
+      "price": 1599,
+      "shortDesc": "Crisp notes folded into roses — you choose the amount",
+      "sort": 40,
       "status": "published",
       "stock": null,
-      "sort": 40,
-      "tags": ["wedding", "graduation"]
+      "tags": [
+        "wedding",
+        "graduation"
+      ],
+      "updatedAt": "2026-09-26T16:38:20.521Z"
     },
     {
       "slug": "chocolate-rose-mix",
-      "name": "Chocolate & Rose Mix",
       "category": "Chocolate",
-      "shortDesc": "Assorted chocolates with fresh roses",
+      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "A mixed bouquet of assorted chocolates and fresh red roses, wrapped in tissue and brown paper. Roses are sourced the morning of delivery.",
-      "price": 1199,
-      "mrp": 1399,
       "images": [],
       "leadTimeDays": 2,
+      "mrp": 1399,
+      "name": "Chocolate & Rose Mix",
+      "price": 1199,
+      "shortDesc": "Assorted chocolates with fresh roses",
+      "sort": 50,
       "status": "published",
       "stock": null,
-      "sort": 50,
-      "tags": ["anniversary", "bestseller"]
+      "tags": [
+        "anniversary",
+        "bestseller"
+      ],
+      "updatedAt": "2026-09-26T16:38:20.521Z"
     },
     {
       "slug": "birthday-special-hamper",
-      "name": "Birthday Special Hamper",
       "category": "Hamper",
-      "shortDesc": "Chocolate bouquet + teddy + balloons + card",
+      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "The full package: a chocolate bouquet, a six-inch teddy, a balloon bunch and a handwritten card, boxed together.",
-      "price": 1899,
-      "mrp": 2199,
       "images": [],
       "leadTimeDays": 3,
+      "mrp": 2199,
+      "name": "Birthday Special Hamper",
+      "price": 1899,
+      "shortDesc": "Chocolate bouquet + teddy + balloons + card",
+      "sort": 60,
       "status": "published",
       "stock": null,
-      "sort": 60,
-      "tags": ["birthday", "hamper"]
+      "tags": [
+        "birthday",
+        "hamper"
+      ],
+      "updatedAt": "2026-09-26T16:38:20.521Z"
     }
   ],
   "gallery": []
