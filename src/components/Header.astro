@@ -1,7 +1,8 @@
 ---
 import CartButton from './CartButton.jsx';
+import AccountLink from './AccountLink.jsx';
 
-const { settings } = Astro.props;
+const { settings, customerSession } = Astro.props;
 
 const links = [
   { href: '/shop', label: 'Shop' },
@@ -40,6 +41,14 @@ const path = Astro.url.pathname;
       ))}
     </ul>
 
+    <div class="ml-auto hidden items-center gap-3 sm:flex">
+      {customerSession ? (
+        <AccountLink client:idle name={customerSession.name} />
+      ) : (
+        <a href="/account/login" class="text-sm font-medium text-ink-700 hover:text-blush-600">Sign in</a>
+      )}
+    </div>
+
     <div class="ml-auto sm:ml-0">
       <CartButton client:idle />
     </div>
@@ -59,5 +68,15 @@ const path = Astro.url.pathname;
         >{l.label}</a>
       </li>
     ))}
+    <li class="shrink-0">
+      <a
+        href={customerSession ? '/account' : '/account/login'}
+        aria-current={path.startsWith('/account') ? 'page' : undefined}
+        class:list={[
+          'block rounded-full px-3 py-1.5 text-sm font-medium transition',
+          path.startsWith('/account') ? 'bg-blush-100 text-blush-700' : 'text-ink-700',
+        ]}
+      >{customerSession ? 'Account' : 'Sign in'}</a>
+    </li>
   </ul>
 </header>

@@ -53,11 +53,30 @@ export default defineConfig({
   // which deploy as Netlify functions the same way.
   output: 'static',
 
-  // `astro dev` otherwise tries to emulate Netlify Edge Functions locally via
-  // Deno, which isn't installed and isn't needed — nothing here uses edge
-  // functions (phase 2's admin/API routes are regular Netlify Functions).
-  // This just silences that noisy, harmless dev-only error.
-  adapter: netlify({ devFeatures: { environmentVariables: false, images: true, edgeFunctions: false } }),
+  adapter: netlify({
+    // `astro dev` otherwise tries to emulate Netlify Edge Functions locally
+    // via Deno, which isn't installed and isn't needed — nothing here uses
+    // edge functions (the admin/API routes are regular Netlify Functions).
+    // This just silences that noisy, harmless dev-only error.
+    devFeatures: { environmentVariables: false, images: true, edgeFunctions: false },
+    // pdfkit (a dependency of @react-pdf/renderer, used for invoice PDFs)
+    // loads its own standard font metrics via `require()` at runtime, inside
+    // its own package — Vite's SSR bundler only sees static imports, so this
+    // file never ships with the function on its own. Builds and works fine
+    // locally (the files exist on disk relative to the source) and then
+    // fails the moment it's actually deployed, since the files simply
+    // aren't there — confirmed by invoking the real compiled
+    // .netlify/v1/functions/ssr/ssr.mjs directly, not just by `npm run
+    // build` succeeding (it succeeds either way). This is also why our own
+    // invoice font is embedded as base64 in src/assets/notoSansFonts.ts
+    // rather than read from a file at runtime the same way.
+    includeFiles: [
+      // Not a flat directory — standard-fonts/ has its own chunks/
+      // subdirectory, which a one-level `*` glob silently misses.
+      './node_modules/pdfkit/js/standard-fonts/**/*',
+      './node_modules/pdfkit/js/data/*',
+    ],
+  }),
 
   integrations: [
     react(),

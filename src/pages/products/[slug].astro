@@ -6,6 +6,7 @@ import { getLiveCatalog, isSoldOut } from "../../lib/catalog.js";
 import { imageUrl, srcSet, coverOf } from "../../lib/cloudinary.js";
 import { formatINR, discountPercent } from "../../lib/money.js";
 import { productLink } from "../../lib/whatsapp.js";
+import { CUSTOMER_SESSION_COOKIE, verifyCustomerSessionToken } from "../../lib/customerAuth.js";
 
 // Read live on every request (see src/lib/catalog.js) rather than
 // getStaticPaths — a product added in the admin is reachable by its URL
@@ -34,6 +35,8 @@ const { url: whatsappUrl } = productLink({
   number: settings.whatsappNumber,
   siteUrl: Astro.site?.href,
 });
+const signedIn = !!(await verifyCustomerSessionToken(Astro.cookies.get(CUSTOMER_SESSION_COOKIE)?.value));
+const loginUrl = `/account/login?next=${encodeURIComponent(Astro.url.pathname)}`;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -173,14 +176,23 @@ const jsonLd = {
                   image={coverOf(product, 400)}
                   variant="full"
                 />
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener"
-                  class="flex w-full items-center justify-center rounded-full border border-[#25D366] px-6 py-3.5 font-semibold text-[#128C7E] transition hover:bg-[#25D366]/10 mt-5"
-                >
-                  Order just this on WhatsApp
-                </a>
+                {signedIn ? (
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener"
+                    class="flex w-full items-center justify-center rounded-full border border-[#25D366] px-6 py-3.5 font-semibold text-[#128C7E] transition hover:bg-[#25D366]/10 mt-5"
+                  >
+                    Order just this on WhatsApp
+                  </a>
+                ) : (
+                  <a
+                    href={loginUrl}
+                    class="flex w-full items-center justify-center rounded-full border border-blush-300 px-6 py-3.5 font-semibold text-blush-700 transition hover:bg-blush-50 mt-5"
+                  >
+                    Sign in to order on WhatsApp
+                  </a>
+                )}
               </>
             )
           }

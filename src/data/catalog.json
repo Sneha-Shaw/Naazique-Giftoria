@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T11:49:52.895Z",
+  "generatedAt": "2026-10-03T08:40:58.376Z",
   "settings": {
     "announcementBanner": "",
     "businessName": "Naazique Giftoria",
@@ -38,6 +38,11 @@
           "publicId": "giftshop/ferrero-rocher-bouquet-1-muimohy7",
           "alt": "Ferrero Rocher Bouquet",
           "sort": 0
+        },
+        {
+          "publicId": "giftshop/kanjak-gift-2-mujw72vt",
+          "alt": "VS Club Kanjak Gift Pack Mini (Set of 12) - Complete Ashtami/Navami Kanya Pujan Gift Set for Girls",
+          "sort": 1
         }
       ],
       "leadTimeDays": 7,

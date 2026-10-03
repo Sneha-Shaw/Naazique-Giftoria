@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import SignupForm from '../../components/SignupForm.jsx';
+import { getLiveCatalog } from '../../lib/catalog.js';
+
+export const prerender = false;
+
+const { settings } = await getLiveCatalog();
+const next = Astro.url.searchParams.get('next') || '/account';
+---
+<Base settings={settings} title="Create an account" description="Sign up to check out and track your orders.">
+  <div class="mx-auto max-w-sm px-4 py-10 text-center">
+    <h1 class="font-display text-2xl font-semibold text-ink-900">Create an account</h1>
+    <p class="mt-1 text-sm text-ink-700">So we always have the right name, number and delivery details for your order.</p>
+  </div>
+  <SignupForm client:load next={next} />
+</Base>

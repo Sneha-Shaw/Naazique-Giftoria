@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getLiveCatalog } from '../../lib/catalog.js';
+import { requireCustomerPageSession } from '../../lib/customerGuard.js';
+import { getDb } from '../../lib/db.js';
+import { formatINR } from '../../lib/money.js';
+import type { OrderWithId } from '../../lib/schemas.js';
+
+export const prerender = false;
+
+const session = await requireCustomerPageSession(Astro);
+if (session instanceof Response) return session;
+
+const { settings } = await getLiveCatalog();
+
+const db = await getDb();
+const orders = await db.collection<OrderWithId>('orders')
+  .find({ customerId: session.customerId })
+  .sort({ createdAt: -1 })
+  .toArray();
+
+const STATUS_LABEL: Record<string, string> = {
+  pending: 'Awaiting confirmation', confirmed: 'Confirmed', preparing: 'Preparing', out_for_delivery: 'Out for delivery',
+  delivered: 'Delivered', cancelled: 'Cancelled',
+};
+const STATUS_STYLE: Record<string, string> = {
+  pending: 'bg-orange-100 text-orange-700',
+  confirmed: 'bg-blush-100 text-blush-700', preparing: 'bg-amber-50 text-amber-700',
+  out_for_delivery: 'bg-sky-50 text-sky-700', delivered: 'bg-emerald-50 text-emerald-700',
+  cancelled: 'bg-ink-700/10 text-ink-700/60',
+};
+
+function fmtDate(d: Date): string {
+  return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+---
+<Base settings={settings} title="My account" noindex description="Your orders with us.">
+  <div class="mx-auto max-w-2xl px-4 py-10">
+    <h1 class="font-display text-3xl font-semibold text-ink-900">Hi, {session.name.split(' ')[0]}</h1>
+    <p class="mt-1 text-ink-700">Your orders with {settings.businessName}.</p>
+
+    {orders.length === 0 ? (
+      <div class="mt-10 rounded-2xl border border-dashed border-blush-200 p-10 text-center">
+        <p class="text-ink-700">No orders yet.</p>
+        <a href="/shop" class="mt-4 inline-flex rounded-full bg-blush-500 px-6 py-3 font-semibold text-white transition hover:bg-blush-600">
+          Browse bouquets
+        </a>
+      </div>
+    ) : (
+      <ul class="mt-6 divide-y divide-blush-100 overflow-hidden rounded-2xl border border-blush-100 bg-white">
+        {orders.map((o) => (
+          <li>
+            <a href={`/account/orders/${o.orderCode}`} class="flex items-center justify-between gap-3 p-4 hover:bg-blush-50">
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-ink-900">Order #{o.orderCode}</p>
+                <p class="mt-0.5 text-xs text-ink-700">
+                  {fmtDate(new Date(o.createdAt))} · {o.items.length} item{o.items.length === 1 ? '' : 's'} · {formatINR(o.total)}
+                </p>
+              </div>
+              <span class={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLE[o.status]}`}>
+                {STATUS_LABEL[o.status]}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <div class="mt-10 rounded-2xl bg-cream-100 p-5 text-sm text-ink-700">
+      <p class="font-semibold text-ink-900">Placing an order</p>
+      <p class="mt-1">
+        Add what you like to the basket and send it over on WhatsApp — it's saved here right away as
+        "Awaiting confirmation". We'll confirm the details with you on chat, then update it here as it's prepared.
+      </p>
+    </div>
+  </div>
+</Base>

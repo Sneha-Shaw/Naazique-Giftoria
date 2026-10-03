@@ -176,7 +176,88 @@ bouquet builder (`/build`) was built, then removed at the user's request —
 custom orders now go through the WhatsApp enquiry links on the home and shop
 pages instead of an in-browser builder.
 
-**Phase 4 — not started.** Orders log, stock tracking, and a small dashboard.
-The data model (`products.status`/`stock`, `users.role`) was designed for
-these from the start — see the plan — so they should be additive, not a
-rewrite.
+**Phase 4 (orders + customer accounts) — done.** WhatsApp Business App (the
+free tier this whole plan is built on) gives no programmatic access to a chat
+started from a `wa.me` link — there is no webhook, no callback, nothing an
+order page could listen for. So checkout can declare an order, but it can
+never confirm one — only she can, after actually talking to the customer on
+WhatsApp:
+
+- **Checkout requires a customer account** (`src/lib/customerAuth.ts` — fully
+  separate from admin auth: its own cookie `gb_customer_session`, its own
+  `customers` collection, `aud: 'customer'` enforced on the JWT so a token
+  from one system is rejected outright by the other). The point isn't just to
+  auto-create orders — it's a reliable name/phone/email to reference instead
+  of retyping whatever a customer happened to type in a WhatsApp chat.
+- Clicking "Order on WhatsApp" in the cart now does two things at once: opens
+  the WhatsApp chat exactly as before (that navigation is never blocked or
+  delayed), and — alongside it, not gating it — `POST /api/account/orders`
+  (`src/pages/api/account/orders.ts`) records the order as **`pending`**.
+  `pending` is a status only checkout can create; it's deliberately excluded
+  from `customerCheckoutSchema` as a client-settable field (verified: a
+  checkout request that sends `status: "confirmed"` is silently ignored, not
+  honored) — only admin moves it to `confirmed`, from `/admin/orders`, after
+  actually hearing from the customer on WhatsApp. If the save fails, the
+  WhatsApp chat still opens — she can always log it by hand instead, same as
+  before this existed.
+- Logging an order **by hand** (`/admin/orders/new`, for phone/Instagram
+  orders that never went through the site) still means picking an existing
+  customer from search and listing items, and skips straight to `confirmed`
+  since by then she's already spoken to them.
+- The total is always computed server-side from qty × price, never trusted
+  from the client, on both paths.
+- Status is a short, real workflow — pending → confirmed → preparing → out
+  for delivery → delivered (+ cancelled) — not re-entry. `/admin/orders` has
+  a "Needs confirmation" filter and updates status with one tap; the
+  customer's `/account` reflects it immediately, same live-read model as the
+  rest of the site.
+- Each order **is** its invoice — no separate invoice system or numbering —
+  viewable as a clean, printable page at `/account/orders/[code]` and
+  downloadable as a real PDF (`src/lib/invoicePdf.tsx`, `@react-pdf/renderer`)
+  from both the customer's own order page and `/admin/orders`. Both the page
+  and the PDF endpoint are gated by the same ownership check
+  (`order.customerId === session.customerId`) that's the entire reason
+  checkout needs an account in the first place: without it, knowing an order
+  code would be enough to see someone else's order.
+
+Verified end-to-end against a local test database, including the properties
+that actually matter here: a customer's order total is computed server-side
+regardless of what the client sends; a signed-in customer gets a 404 (not a
+redirect, not an error revealing the order exists) when trying to view
+another customer's order by code; an admin session cookie is rejected by
+`/api/account/*` and a customer session cookie is rejected by `/api/admin/*`
+— confirmed in both directions, not assumed from the separate cookie names.
+
+### Invoice PDFs — three bugs that only showed up when actually deployed
+
+Each of these built, typechecked, and worked perfectly in `astro dev` — and
+would have shipped completely broken, because none of them are things a local
+dev server exercises. Caught by invoking the real compiled
+`.netlify/v1/functions/ssr/ssr.mjs` directly and looking at the actual
+rendered PDF (as an image — the text layer of a PDF with a subsetted custom
+font has its own, separate quirks and isn't trustworthy either), not by
+trusting that `npm run build` succeeding meant it worked.
+
+1. **The default PDF font doesn't have a ₹ glyph.** The base-14 PDF fonts
+   (Helvetica etc.) use WinAnsi encoding, which silently renders `₹` as the
+   wrong character instead of erroring. Fixed by embedding Noto Sans
+   (specifically its `latin-ext` subset — plain `latin` doesn't have it
+   either) as base64 in `src/assets/notoSansFonts.ts`.
+2. **A file path that works in one build stage can 404 in the next.**
+   `fileURLToPath(import.meta.url)` — the usual Vite SSR pattern for
+   referencing a sibling asset — resolved to a different location in the
+   intermediate Vite SSR build than in the final Netlify function bundle. The
+   font is embedded as a base64 string constant instead (see above), which
+   sidesteps runtime file resolution entirely. Separately, `pdfkit` (a
+   `@react-pdf/renderer` dependency) loads its own standard-font metrics via
+   `require()` at runtime from inside its own package — that one genuinely
+   needs the files on disk, so `astro.config.mjs`'s `includeFiles` ships them
+   explicitly.
+3. **`<Text>` with multiple children silently drops glyphs after the first.**
+   JSX's `Order #{order.orderCode}` compiles to *two* children passed to
+   `<Text>` — and with this embedded font, `@react-pdf/renderer` only
+   embeds/subsets glyphs correctly for the first one. Every dynamic value in
+   `invoicePdf.tsx` is interpolated as a single template-literal string
+   (`` `Order #${order.orderCode}` ``) specifically to avoid this — not a
+   style choice, a correctness requirement. If you add a new field to the
+   invoice, follow the same pattern or it will render as empty boxes.

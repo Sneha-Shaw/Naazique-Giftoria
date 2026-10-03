@@ -1,0 +1,13 @@
+---
+import AdminShell from '../../../layouts/AdminShell.astro';
+import { requirePageSession } from '../../../lib/adminPage.js';
+import OrdersList from '../../../components/admin/OrdersList.jsx';
+
+export const prerender = false;
+
+const session = await requirePageSession(Astro);
+if (session instanceof Response) return session;
+---
+<AdminShell title="Orders" session={session}>
+  <OrdersList client:load />
+</AdminShell>

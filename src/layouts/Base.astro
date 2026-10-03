@@ -4,6 +4,7 @@ import { enquiryLink } from '../lib/whatsapp.js';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CartDrawer from '../components/CartDrawer.jsx';
+import { CUSTOMER_SESSION_COOKIE, verifyCustomerSessionToken } from '../lib/customerAuth.js';
 
 // `settings` is passed in by the page, which fetched it live via
 // getLiveCatalog() — never imported statically here, or this layout (used on
@@ -15,6 +16,10 @@ const {
   image,
   noindex = false,
 } = Astro.props;
+
+// Checked here, once, rather than per-page — every public page uses this
+// layout, so the header's signed-in state is free to every one of them.
+const customerSession = await verifyCustomerSessionToken(Astro.cookies.get(CUSTOMER_SESSION_COOKIE)?.value);
 
 const siteName = settings.businessName ?? 'Naazique Giftoria';
 const fullTitle = title ? `${title} · ${siteName}` : `${siteName} — ${settings.tagline ?? ''}`;
@@ -66,7 +71,7 @@ const jsonLd = {
       </div>
     )}
 
-    <Header settings={settings} />
+    <Header settings={settings} customerSession={customerSession} />
 
     <main>
       <slot />
@@ -79,6 +84,7 @@ const jsonLd = {
       whatsappNumber={settings.whatsappNumber}
       siteUrl={Astro.site?.href ?? ''}
       minOrderValue={settings.minOrderValue ?? 0}
+      signedIn={!!customerSession}
     />
 
     {/* Most visitors never touch the cart — they just want to talk. */}

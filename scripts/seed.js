@@ -34,6 +34,10 @@ await db.collection('users').createIndex({ email: 1 }, { unique: true });
 // TTL index: login attempts evaporate after 15 minutes, giving us free,
 // self-cleaning rate limiting with no cron job to run.
 await db.collection('loginAttempts').createIndex({ at: 1 }, { expireAfterSeconds: 900 });
+await db.collection('customers').createIndex({ email: 1 }, { unique: true });
+await db.collection('orders').createIndex({ orderCode: 1 }, { unique: true });
+await db.collection('orders').createIndex({ customerId: 1, createdAt: -1 });
+await db.collection('orders').createIndex({ status: 1 });
 console.log('✔ indexes created');
 
 // --- Products ------------------------------------------------------------

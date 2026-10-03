@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import CustomerLoginForm from '../../components/CustomerLoginForm.jsx';
+import { getLiveCatalog } from '../../lib/catalog.js';
+
+export const prerender = false;
+
+const { settings } = await getLiveCatalog();
+const next = Astro.url.searchParams.get('next') || '/account';
+---
+<Base settings={settings} title="Sign in" description="Sign in to check out and track your orders.">
+  <div class="mx-auto max-w-sm px-4 py-10 text-center">
+    <h1 class="font-display text-2xl font-semibold text-ink-900">Sign in</h1>
+  </div>
+  <CustomerLoginForm client:load next={next} />
+</Base>

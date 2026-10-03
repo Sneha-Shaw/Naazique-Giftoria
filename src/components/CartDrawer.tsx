@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { cart, cartOpen, setQty, removeItem, clearCart, itemCount } from '../stores/cart.js';
 import { buildWhatsAppLink, cartTotal } from '../lib/whatsapp.js';
@@ -7,11 +8,14 @@ interface CartDrawerProps {
   whatsappNumber: string | null | undefined;
   siteUrl?: string;
   minOrderValue?: number;
+  /** Whether a customer is currently signed in — checkout is gated on this. */
+  signedIn: boolean;
 }
 
-export default function CartDrawer({ whatsappNumber, siteUrl, minOrderValue = 0 }: CartDrawerProps) {
+export default function CartDrawer({ whatsappNumber, siteUrl, minOrderValue = 0, signedIn }: CartDrawerProps) {
   const items = useStore(cart);
   const open = useStore(cartOpen);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const total = cartTotal(items);
   const count = itemCount(items);
@@ -19,8 +23,37 @@ export default function CartDrawer({ whatsappNumber, siteUrl, minOrderValue = 0 
   const { url, truncated } = items.length
     ? buildWhatsAppLink({ items, number: whatsappNumber, siteUrl })
     : { url: '#', truncated: false };
+  const loginUrl = `/account/login?next=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname : '/')}`;
+  // Not signed in -> the button becomes a real link to sign in. Signed in but
+  // under the minimum -> inert, same as before. Both signed in and over the
+  // minimum -> the actual WhatsApp link.
+  const disabledByMin = signedIn && belowMin;
 
   const close = () => cartOpen.set(false);
+
+  /**
+   * Fires alongside the WhatsApp link's own navigation (never blocks or
+   * delays it — this just records the order). The `<a>` keeps its normal
+   * `href`/`target="_blank"`, so the WhatsApp tab opens exactly as before
+   * even if this request fails or is slow; checkout isn't gone, it's just
+   * not logged yet, so she can still log it by hand in admin.
+   */
+  async function recordCheckout() {
+    setCheckoutError(null);
+    try {
+      const res = await fetch('/api/account/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map((i) => ({ name: i.name, qty: i.qty ?? 1, price: i.price, note: i.note ?? '' })),
+        }),
+      });
+      if (!res.ok) throw new Error('save failed');
+      clearCart();
+    } catch {
+      setCheckoutError("Your WhatsApp message went through, but we couldn't save this order to your account — mention your basket when you chat.");
+    }
+  }
 
   return (
     <>
@@ -120,33 +153,48 @@ export default function CartDrawer({ whatsappNumber, siteUrl, minOrderValue = 0 
                 <span className="font-display text-xl font-semibold text-ink-900">{formatINR(total)}</span>
               </div>
 
-              {belowMin && (
+              {!signedIn && (
+                <p className="mt-2 rounded-lg bg-blush-100 px-3 py-2 text-xs text-blush-700">
+                  Sign in first so we always have the right name and number for your order.
+                </p>
+              )}
+
+              {signedIn && belowMin && (
                 <p className="mt-2 rounded-lg bg-blush-100 px-3 py-2 text-xs text-blush-700">
                   Minimum order is {formatINR(minOrderValue)} — add {formatINR(minOrderValue - total)} more to check out.
                 </p>
               )}
 
-              {truncated && (
+              {signedIn && truncated && (
                 <p className="mt-2 text-xs text-ink-700/80">
                   Your basket is long, so we’ll send a short summary and go through the details on chat.
                 </p>
               )}
 
               <a
-                href={belowMin ? undefined : url}
-                target="_blank"
-                rel="noopener"
-                aria-disabled={belowMin}
-                onClick={(e) => belowMin && e.preventDefault()}
+                href={disabledByMin ? undefined : signedIn ? url : loginUrl}
+                target={signedIn && !disabledByMin ? '_blank' : undefined}
+                rel={signedIn && !disabledByMin ? 'noopener' : undefined}
+                aria-disabled={disabledByMin}
+                onClick={(e) => {
+                  if (disabledByMin) { e.preventDefault(); return; }
+                  if (signedIn) recordCheckout();
+                }}
                 className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-base font-semibold text-white transition ${
-                  belowMin ? 'cursor-not-allowed bg-ink-700/30' : 'bg-[#25D366] hover:brightness-95'
+                  disabledByMin ? 'cursor-not-allowed bg-ink-700/30' : signedIn ? 'bg-[#25D366] hover:brightness-95' : 'bg-blush-500 hover:bg-blush-600'
                 }`}
               >
-                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
-                  <path d="M20.464 3.488A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.479-8.413M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.988 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/>
-                </svg>
-                Order on WhatsApp
+                {signedIn && !disabledByMin && (
+                  <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
+                    <path d="M20.464 3.488A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.479-8.413M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.988 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/>
+                  </svg>
+                )}
+                {!signedIn ? 'Sign in to check out' : disabledByMin ? 'Add more to check out' : 'Order on WhatsApp'}
               </a>
+
+              {checkoutError && (
+                <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">{checkoutError}</p>
+              )}
 
               {/* Set expectations before she has to manage them by hand, one chat at a time. */}
               <p className="mt-2 text-center text-xs text-ink-700/70">
