@@ -5,8 +5,8 @@
  */
 import readline from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
-import { getDb, closeDb } from '../src/lib/db.js';
-import { hashPassword } from '../src/lib/auth.js';
+import { MongoClient } from 'mongodb';
+import bcrypt from 'bcryptjs';
 
 if (!process.env.MONGODB_URI) {
   console.error('✖ MONGODB_URI is not set. Copy .env.example to .env and fill it in.');
@@ -27,10 +27,18 @@ if (password.length < 8) {
   process.exit(1);
 }
 
-const db = await getDb();
+// A one-off connection, not the pooled client from src/lib/db.ts: this script
+// runs directly under Node, not bundled by Vite, so it can't resolve a `.ts`
+// module through a `.js`-suffixed specifier — that resolution trick is Vite's
+// "Bundler" moduleResolution, which doesn't apply to a plain `node` process.
+// Same reason hashPassword() isn't imported from src/lib/auth.ts either — it's
+// one line, not worth the same problem for.
+const client = new MongoClient(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10_000 });
+await client.connect();
+const db = client.db('giftshop');
 await db.collection('users').createIndex({ email: 1 }, { unique: true });
 
-const passwordHash = await hashPassword(password);
+const passwordHash = await bcrypt.hash(password, 12);
 const existing = await db.collection('users').findOne({ email });
 
 if (existing) {
@@ -43,5 +51,5 @@ if (existing) {
   console.log(`✔ Admin account created for ${email}.`);
 }
 
-await closeDb();
+await client.close();
 console.log('\nSign in at /admin/login once the site is deployed (or at http://localhost:4321/admin/login locally).');

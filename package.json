@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env node_modules/.bin/astro dev",
     "prebuild": "node --env-file-if-exists=.env scripts/fetch-catalog.js",
-    "build": "astro build",
+    "build": "node --env-file-if-exists=.env node_modules/.bin/astro build",
     "preview": "astro preview",
     "catalog:pull": "node --env-file-if-exists=.env scripts/fetch-catalog.js",
     "seed": "node --env-file-if-exists=.env scripts/seed.js",
@@ -37,6 +37,8 @@
     "esbuild": true
   },
   "devDependencies": {
-    "mongodb-memory-server": "^11.2.0"
+    "@astrojs/check": "^0.9.10",
+    "mongodb-memory-server": "^11.2.0",
+    "typescript": "^6.0.3"
   }
 }

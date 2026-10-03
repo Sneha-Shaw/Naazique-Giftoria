@@ -1,11 +1,12 @@
 ---
 import '../../styles/global.css';
 import LoginForm from '../../components/admin/LoginForm.jsx';
-import { settings } from '../../lib/catalog.js';
+import { getLiveCatalog } from '../../lib/catalog.js';
 
 export const prerender = false;
 
 const next = Astro.url.searchParams.get('next') || '/admin/products';
+const { settings } = await getLiveCatalog();
 ---
 <!doctype html>
 <html lang="en">

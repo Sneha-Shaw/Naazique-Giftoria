@@ -37,15 +37,18 @@ if (!process.env.MONGODB_URI) {
   await keepSnapshot('MONGODB_URI is not set.');
 }
 
-let getDb, closeDb;
-try {
-  ({ getDb, closeDb } = await import('../src/lib/db.js'));
-} catch (err) {
-  await keepSnapshot(`could not load the db module: ${err.message}`);
-}
+// A one-off connection, not the pooled client from src/lib/db.ts: this script
+// is run directly by Node (`node scripts/fetch-catalog.js`), not bundled by
+// Vite, so it can't resolve a `.ts` module through a `.js`-suffixed specifier
+// the way every other file in the app can — that resolution trick is Vite's
+// "Bundler" moduleResolution, which doesn't apply here. Same fix as
+// astro.config.mjs's sitemap builder, which hit the identical problem.
+const { MongoClient } = await import('mongodb');
+const client = new MongoClient(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10_000 });
 
 try {
-  const db = await getDb();
+  await client.connect();
+  const db = client.db('giftshop');
 
   // `_id` is dropped: it is a BSON ObjectId that would serialize as an object
   // and is meaningless to the static site, which addresses products by `slug`.
@@ -69,12 +72,12 @@ try {
   };
 
   await writeFile(OUT, `${JSON.stringify(snapshot, null, 2)}\n`);
-  await closeDb();
 
   const published = products.filter((p) => p.status === 'published').length;
   ok(`${published} published product${published === 1 ? '' : 's'}, ${gallery.length} gallery images.`);
   if (published === 0) warn('no published products — the shop page will be empty.');
 } catch (err) {
-  try { await closeDb?.(); } catch { /* already down */ }
   await keepSnapshot(`database read failed: ${err.message}`);
+} finally {
+  await client.close();
 }

@@ -1,6 +1,7 @@
 ---
-import { settings } from '../lib/catalog.js';
 import { enquiryLink } from '../lib/whatsapp.js';
+
+const { settings } = Astro.props;
 const year = new Date().getFullYear();
 ---
 <footer class="mt-20 border-t border-blush-100 bg-cream-100">

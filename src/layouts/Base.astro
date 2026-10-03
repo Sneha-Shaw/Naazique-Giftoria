@@ -1,12 +1,15 @@
 ---
 import '../styles/global.css';
-import { settings } from '../lib/catalog.js';
 import { enquiryLink } from '../lib/whatsapp.js';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CartDrawer from '../components/CartDrawer.jsx';
 
+// `settings` is passed in by the page, which fetched it live via
+// getLiveCatalog() — never imported statically here, or this layout (used on
+// every page) would keep showing whatever the last build happened to see.
 const {
+  settings,
   title,
   description = settings.tagline ?? '',
   image,
@@ -63,13 +66,13 @@ const jsonLd = {
       </div>
     )}
 
-    <Header />
+    <Header settings={settings} />
 
     <main>
       <slot />
     </main>
 
-    <Footer />
+    <Footer settings={settings} />
 
     <CartDrawer
       client:idle

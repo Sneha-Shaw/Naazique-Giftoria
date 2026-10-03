@@ -9,7 +9,7 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { getDb, closeDb } from '../src/lib/db.js';
+import { MongoClient } from 'mongodb';
 
 if (!process.env.MONGODB_URI) {
   console.error('✖ MONGODB_URI is not set. Copy .env.example to .env and fill it in.');
@@ -19,7 +19,13 @@ if (!process.env.MONGODB_URI) {
 const here = dirname(fileURLToPath(import.meta.url));
 const seed = JSON.parse(await readFile(resolve(here, '../src/data/catalog.json'), 'utf8'));
 
-const db = await getDb();
+// A one-off connection, not the pooled client from src/lib/db.ts: this script
+// runs directly under Node, not bundled by Vite, so it can't resolve a `.ts`
+// module through a `.js`-suffixed specifier — that resolution trick is Vite's
+// "Bundler" moduleResolution, which doesn't apply to a plain `node` process.
+const client = new MongoClient(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10_000 });
+await client.connect();
+const db = client.db('giftshop');
 
 // --- Indexes -------------------------------------------------------------
 await db.collection('products').createIndex({ slug: 1 }, { unique: true });
@@ -59,5 +65,5 @@ if (existing) {
   console.log('✔ settings created (remember to set the real WhatsApp number)');
 }
 
-await closeDb();
+await client.close();
 console.log('\nDone. Run `npm run catalog:pull` to refresh the local snapshot.');

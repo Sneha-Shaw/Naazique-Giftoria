@@ -5,9 +5,11 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# The catalogue is baked in at build time, so HTML can be cached hard at the edge
-# and revalidated on each deploy. Astro fingerprints its own assets, so those get
-# the immutable treatment.
+# JS/CSS bundles are content-hashed by Astro, so a given filename's contents
+# never change — safe to cache forever regardless of how any page renders.
+# The pages themselves (server-rendered per request, reading MongoDB live —
+# see src/lib/catalog.js) are NOT cached here, deliberately: a fresh product
+# should be visible on refresh, not stuck behind a stale edge cache.
 [[headers]]
   for = "/_astro/*"
   [headers.values]

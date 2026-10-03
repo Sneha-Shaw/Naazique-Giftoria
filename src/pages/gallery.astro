@@ -1,9 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import { gallery, settings } from '../lib/catalog.js';
+import { getLiveCatalog } from '../lib/catalog.js';
 import { imageUrl, srcSet } from '../lib/cloudinary.js';
+
+export const prerender = false;
+
+const { gallery, settings } = await getLiveCatalog();
 ---
-<Base title="Gallery" description="Past bouquets and custom orders we've made.">
+<Base settings={settings} title="Gallery" description="Past bouquets and custom orders we've made.">
   <div class="mx-auto max-w-6xl px-4 py-12">
     <h1 class="font-display text-3xl font-semibold text-ink-900">Made recently</h1>
     <p class="mt-2 text-ink-700">A few of the bouquets and hampers we've put together for customers.</p>

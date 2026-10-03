@@ -1,14 +1,9 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-09-27T11:49:52.895Z",
   "settings": {
-    "businessName": "Naazique Giftoria",
-    "tagline": "Handmade chocolate bouquets, made to order",
-    "whatsappNumber": "917980066518",
-    "instagramUrl": "https://instagram.com/naaziquegiftoria",
-    "deliveryAreas": "Free delivery across the city. Outstation courier available on request.",
-    "orderCutoffNote": "Please order at least 2 days ahead. Same-day orders depend on availability — just ask!",
     "announcementBanner": "",
-    "minOrderValue": 500,
+    "businessName": "Naazique Giftoria",
+    "deliveryAreas": "Free delivery across the city. Outstation courier available on request.",
     "faqs": [
       {
         "q": "How far in advance should I order?",
@@ -26,13 +21,17 @@
         "q": "How do I pay?",
         "a": "UPI once the order is confirmed on WhatsApp. We'll send a QR code."
       }
-    ]
+    ],
+    "instagramUrl": "https://instagram.com/naaziquegiftoria",
+    "minOrderValue": 500,
+    "orderCutoffNote": "Please order at least 2 days ahead. Same-day orders depend on availability — just ask!",
+    "tagline": "Handmade chocolate bouquets, made to order",
+    "whatsappNumber": "919999999999"
   },
   "products": [
     {
       "slug": "kanjak-gift",
       "category": "Chocolate",
-      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "VS Club Kanjak Gifts for Girls (Pack of 12) Complete Kanya Pujan Gift Set for Navratri | Includes Premium Stationery Kit (Pencil, Eraser, Sharpener) & Delicious Cndies| Jai Mata Di Navratri Return Gifts for Kids\n✨ COMPLETE KANYA PUJAN GIFT SET FOR GIRLS: Save time this Navratri with our ready-to-use Kanjak gift packs. This set of 12 pre-packed return gifts for Kanya Pujan is the perfect solution for busy households during Ashtami and Navami pujan.\n📚 PREMIUM STATIONERY RETURN GIFTS: Each mini pack is filled with essential school stationery items including a high-quality pencil, a sharpener, and a dust-free eraser. These are useful gifts for kids that parents appreciate and children love to use for school.\n🍬 BULK BIRTHDAY & FESTIVE GOODY BAGS: Beyond Navratri, these serve as excellent birthday return gifts for kids or party favor bags. Each pack includes 2 delicious cndies and a vibrant butterfly hair clutcher, making it a delightful gift hamper for girls.\n🙏 JAI MATA DI DEVOTIONAL THEME: Designed specifically for Hindu festival gifting, each pack features a beautiful Goddess Durga illustration and \"Jai Mata Di\" branding. It maintains the traditional and spiritual vibe of Navratri celebrations.\n💰 BUDGET-FRIENDLY WHOLESALE PACK: Get the best value with this bulk gift set of 12. These affordable Kanjak items come beautifully packed in transparent sleeves, ensuring premium presentation without the high cost of individual gifting sets.\n🌟 MULTI-PURPOSE FESTIVE GIFTING: While ideally designed for Kanjak / Kanya Pujan, these sets also serve as excellent return gifts for birthdays, school events, or any festive gathering for young girls and boys.\n💰 BUDGET-FRIENDLY WHOLESALE PACK: Get the best value with this bulk gift set of 12. These affordable Kanjak items come beautifully packed in transparent sleeves, ensuring premium presentation without the high cost of individual gifting sets.",
       "images": [
         {
@@ -52,13 +51,11 @@
       "tags": [
         "bestseller",
         "anniversary"
-      ],
-      "updatedAt": "2026-09-26T16:59:20.150Z"
+      ]
     },
     {
       "slug": "dairy-milk-silk-bouquet",
       "category": "Chocolate",
-      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "Eight full-size Dairy Milk Silk bars in a pastel paper wrap with a hand-tied ribbon. A crowd-pleaser for birthdays.",
       "images": [],
       "leadTimeDays": 2,
@@ -71,13 +68,11 @@
       "stock": null,
       "tags": [
         "birthday"
-      ],
-      "updatedAt": "2026-09-26T16:38:20.521Z"
+      ]
     },
     {
       "slug": "kitkat-mini-bouquet",
       "category": "Chocolate",
-      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "A smaller, budget-friendly bouquet with six KitKat bars, baby's breath and a kraft paper wrap.",
       "images": [],
       "leadTimeDays": 1,
@@ -90,13 +85,11 @@
       "stock": null,
       "tags": [
         "budget"
-      ],
-      "updatedAt": "2026-09-26T16:38:20.521Z"
+      ]
     },
     {
       "slug": "money-bouquet",
       "category": "Special",
-      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "Currency notes hand-folded into roses and arranged with greenery. You provide the notes, we do the folding. Price shown is for the arrangement only.",
       "images": [],
       "leadTimeDays": 3,
@@ -110,13 +103,11 @@
       "tags": [
         "wedding",
         "graduation"
-      ],
-      "updatedAt": "2026-09-26T16:38:20.521Z"
+      ]
     },
     {
       "slug": "chocolate-rose-mix",
       "category": "Chocolate",
-      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "A mixed bouquet of assorted chocolates and fresh red roses, wrapped in tissue and brown paper. Roses are sourced the morning of delivery.",
       "images": [],
       "leadTimeDays": 2,
@@ -130,13 +121,11 @@
       "tags": [
         "anniversary",
         "bestseller"
-      ],
-      "updatedAt": "2026-09-26T16:38:20.521Z"
+      ]
     },
     {
       "slug": "birthday-special-hamper",
       "category": "Hamper",
-      "createdAt": "2026-09-26T16:38:20.521Z",
       "description": "The full package: a chocolate bouquet, a six-inch teddy, a balloon bunch and a handwritten card, boxed together.",
       "images": [],
       "leadTimeDays": 3,
@@ -150,8 +139,7 @@
       "tags": [
         "birthday",
         "hamper"
-      ],
-      "updatedAt": "2026-09-26T16:38:20.521Z"
+      ]
     }
   ],
   "gallery": []
